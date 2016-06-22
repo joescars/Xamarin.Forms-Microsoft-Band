@@ -8,7 +8,7 @@ using Xamarin.Forms;
 
 namespace BioInfo.Client
 {
-    public class MainPage : ContentPage
+    public class MainPageOld : ContentPage
     {
         private BandClient bandClient;
         private BandDeviceInfo band;
@@ -18,18 +18,19 @@ namespace BioInfo.Client
         Label myHeartRate = new Label();
         Label mySkinTemp = new Label();
         Label myGSR = new Label();
+        Label mainHeading = new Label();
         Button clickMe;
         Button btnHeartToggle;
         Button btnSkinTempToggle;
         Button btnGSRToggle;
-        Button btnConnect;
+        Button btnConnect;        
 
         string results = "Nothing Loaded";
         bool HeartRateActive = false;
         bool SkinTempActive = false;
         bool GSRActive = false;
 
-        public MainPage()
+        public MainPageOld()
         {
  
             this.Padding = new Thickness(20, Device.OnPlatform(40, 20, 20), 20, 20);
@@ -41,6 +42,15 @@ namespace BioInfo.Client
                 Orientation = StackOrientation.Vertical,
                 Spacing = 15
             };
+
+            panel.Children.Add(mainHeading = new Label
+            {
+                Text = "BioInformatics",
+                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
+                FontAttributes = FontAttributes.Bold,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand
+            });
 
             panel.Children.Add(myLabel = new Label
             {
@@ -67,10 +77,10 @@ namespace BioInfo.Client
                 Text = "Connect to Band"
             });
 
-            panel.Children.Add(clickMe = new Button
-            {
-                Text = "Show Connected Band"
-            });
+            //panel.Children.Add(clickMe = new Button
+            //{
+            //    Text = "Show Connected Band"
+            //});
 
             panel.Children.Add(btnHeartToggle = new Button
             {
@@ -87,7 +97,7 @@ namespace BioInfo.Client
                 Text = "Start GSR Monitor"
             });
 
-            clickMe.Clicked += ClickMe_Clicked;
+            //clickMe.Clicked += ClickMe_Clicked;
             btnHeartToggle.Clicked += BtnHeartToggle_Clicked;
             btnConnect.Clicked += BtnConnect_Clicked;
             btnSkinTempToggle.Clicked += BtnSkinTempToggle_Clicked;
@@ -106,16 +116,38 @@ namespace BioInfo.Client
 
         private void BtnGSRToggle_Clicked(object sender, EventArgs e)
         {
-            // GSR sensor
-            StartGSR();
-            bandClient.SensorManager.Gsr.ReadingChanged += Gsr_ReadingChanged;
+            if (GSRActive)
+            {
+                StopGSR();
+                GSRActive = !GSRActive;
+                btnGSRToggle.Text = "Start GSR Monitor";
+            }
+            else
+            {
+                StartGSR();
+                bandClient.SensorManager.Gsr.ReadingChanged += Gsr_ReadingChanged;
+                GSRActive = !GSRActive;
+                btnGSRToggle.Text = "Stop GSR Monitor";
+            }
+
         }
 
         private void BtnSkinTempToggle_Clicked(object sender, EventArgs e)
         {
-            // Skin Sensor
-            StartSkinTemp();
-            bandClient.SensorManager.SkinTemperature.ReadingChanged += SkinTemperature_ReadingChanged;
+            if (SkinTempActive)
+            {
+                StopSkinTemp();
+                SkinTempActive = !SkinTempActive;
+                btnSkinTempToggle.Text = "Start Skin Temp Monitor";
+            }
+            else
+            {
+                StartSkinTemp();
+                bandClient.SensorManager.SkinTemperature.ReadingChanged += SkinTemperature_ReadingChanged;
+                SkinTempActive = !SkinTempActive;
+                btnSkinTempToggle.Text = "Stop Skin Temp Monitor";
+            }
+
         }
         
         private async void BtnHeartToggle_Clicked(object sender, EventArgs e)
@@ -125,7 +157,7 @@ namespace BioInfo.Client
                 StopHR();
                 btnHeartToggle.Text = "Start Heart Rate Monitor";
                 myHeartRate.Text = "Heart rate not active";
-                HeartRateActive = false;
+                HeartRateActive = !HeartRateActive;
             }
             else
             {
@@ -152,7 +184,7 @@ namespace BioInfo.Client
                     StartHR();
                     bandClient.SensorManager.HeartRate.ReadingChanged += HeartRate_ReadingChanged;
                     btnHeartToggle.Text = "Stop Heart Rate Monitor";
-                    HeartRateActive = true;
+                    HeartRateActive = !HeartRateActive;
                 }
                 else
                 {
@@ -161,19 +193,19 @@ namespace BioInfo.Client
             }
         }
 
-        private async void ClickMe_Clicked(object sender, EventArgs e)
-        {
-            string myMessage;
-            if (band != null)
-            {
-                myMessage = band.Name;                
-            }
-            else
-            {
-                myMessage = "Nothing Yet";
-            }
-            await this.DisplayAlert("Message", myMessage, "Dismiss");
-        }
+        //private async void ClickMe_Clicked(object sender, EventArgs e)
+        //{
+        //    string myMessage;
+        //    if (band != null)
+        //    {
+        //        myMessage = band.Name;                
+        //    }
+        //    else
+        //    {
+        //        myMessage = "Nothing Yet";
+        //    }
+        //    await this.DisplayAlert("Message", myMessage, "Dismiss");
+        //}
 
         private async void getBands()
         {

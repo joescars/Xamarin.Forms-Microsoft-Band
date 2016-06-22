@@ -74,7 +74,7 @@
     </StackLayout>
 
     <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblPedometer" Text="Calories" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Label x:Name="lblPedometer" Text="Steps" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
       <Switch x:Name="TogglePedo" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnTogglePedometer" IsEnabled="False"/>
     </StackLayout>    
 

@@ -284,7 +284,7 @@ namespace BioInfo.Client
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                lblUV.Text = string.Format("Today: {0} Level: {1}",
+                lblUV.Text = string.Format("UV Today: {0} Level: {1}",
                     e.SensorReading.ExposureToday.ToString(), e.SensorReading.Level);
             });
         }
@@ -293,7 +293,7 @@ namespace BioInfo.Client
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                lblCalories.Text = string.Format("Today: {0} Total: {1}",
+                lblCalories.Text = string.Format("Calories Today: {0} Total: {1}",
                     e.SensorReading.CaloriesToday.ToString("N0"), e.SensorReading.Calories.ToString("N0"));
             });
         }
@@ -301,7 +301,7 @@ namespace BioInfo.Client
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                lblPedometer.Text = string.Format("Today: {0} Total: {1}",
+                lblPedometer.Text = string.Format("Steps Today: {0} Total: {1}",
                     e.SensorReading.StepsToday.ToString("N0"), e.SensorReading.TotalSteps.ToString("N0"));
             });
         }

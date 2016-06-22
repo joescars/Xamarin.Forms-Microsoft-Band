@@ -10,21 +10,28 @@ namespace BioInfo.Client
 {
     public class MainPage : ContentPage
     {
-        ListView lv = new ListView();
+        private BandClient bandClient;
+        private BandDeviceInfo band;
+        private BandClientManager bandClientManager;
+
         Label myLabel = new Label();
         Label myHeartRate = new Label();
         Label mySkinTemp = new Label();
         Label myGSR = new Label();
+        Button clickMe;
+        Button btnHeartToggle;
+        Button btnSkinTempToggle;
+        Button btnGSRToggle;
+        Button btnConnect;
 
         string results = "Nothing Loaded";
+        bool HeartRateActive = false;
+        bool SkinTempActive = false;
+        bool GSRActive = false;
 
-        private BandClient bandClient;
-       
         public MainPage()
         {
-            //load up band info
-            getBands();
-
+ 
             this.Padding = new Thickness(20, Device.OnPlatform(40, 20, 20), 20, 20);
 
             StackLayout panel = new StackLayout
@@ -55,62 +62,141 @@ namespace BioInfo.Client
                 Text = "GSR in kohm Here"
             });
 
+            panel.Children.Add(btnConnect = new Button
+            {
+                Text = "Connect to Band"
+            });
+
+            panel.Children.Add(clickMe = new Button
+            {
+                Text = "Show Connected Band"
+            });
+
+            panel.Children.Add(btnHeartToggle = new Button
+            {
+                Text = "Start Heart Rate Monitor"
+            });
+
+            panel.Children.Add(btnSkinTempToggle = new Button
+            {
+                Text = "Start Skin Temp Monitor"
+            });
+
+            panel.Children.Add(btnGSRToggle = new Button
+            {
+                Text = "Start GSR Monitor"
+            });
+
+            clickMe.Clicked += ClickMe_Clicked;
+            btnHeartToggle.Clicked += BtnHeartToggle_Clicked;
+            btnConnect.Clicked += BtnConnect_Clicked;
+            btnSkinTempToggle.Clicked += BtnSkinTempToggle_Clicked;
+            btnGSRToggle.Clicked += BtnGSRToggle_Clicked;
+
             this.Content = panel;
+
+            //load up band info
+            getBands();
+        }
+
+        private void BtnConnect_Clicked(object sender, EventArgs e)
+        {
+            ConnectToBand();
+        }
+
+        private void BtnGSRToggle_Clicked(object sender, EventArgs e)
+        {
+            // GSR sensor
+            StartGSR();
+            bandClient.SensorManager.Gsr.ReadingChanged += Gsr_ReadingChanged;
+        }
+
+        private void BtnSkinTempToggle_Clicked(object sender, EventArgs e)
+        {
+            // Skin Sensor
+            StartSkinTemp();
+            bandClient.SensorManager.SkinTemperature.ReadingChanged += SkinTemperature_ReadingChanged;
+        }
+        
+        private async void BtnHeartToggle_Clicked(object sender, EventArgs e)
+        {
+            if (HeartRateActive)
+            {
+                StopHR();
+                btnHeartToggle.Text = "Start Heart Rate Monitor";
+                myHeartRate.Text = "Heart rate not active";
+                HeartRateActive = false;
+            }
+            else
+            {
+                bool hrConsentGranted;
+
+                switch (bandClient.SensorManager.HeartRate.UserConsented)
+                {
+                    case UserConsent.Declined:
+                        hrConsentGranted = false;
+                        break;
+
+                    case UserConsent.Granted:
+                        hrConsentGranted = true;
+                        break;
+
+                    default:
+                    case UserConsent.Unspecified:
+                        hrConsentGranted = await bandClient.SensorManager.HeartRate.RequestUserConsent();
+                        break;
+                }
+
+                if (hrConsentGranted)
+                {
+                    StartHR();
+                    bandClient.SensorManager.HeartRate.ReadingChanged += HeartRate_ReadingChanged;
+                    btnHeartToggle.Text = "Stop Heart Rate Monitor";
+                    HeartRateActive = true;
+                }
+                else
+                {
+                    myHeartRate.Text = "No Consent for HR";
+                }
+            }
+        }
+
+        private async void ClickMe_Clicked(object sender, EventArgs e)
+        {
+            string myMessage;
+            if (band != null)
+            {
+                myMessage = band.Name;                
+            }
+            else
+            {
+                myMessage = "Nothing Yet";
+            }
+            await this.DisplayAlert("Message", myMessage, "Dismiss");
         }
 
         private async void getBands()
         {
-
-            var bands = await BandClientManager.Instance.GetPairedBandsAsync();
-            var band = bands.FirstOrDefault();
+            bandClientManager = BandClientManager.Instance;
+            //var bands = await BandClientManager.Instance.GetPairedBandsAsync();
+            var bands = await bandClientManager.GetPairedBandsAsync();
+            band = bands.FirstOrDefault();
             if (band == null)
             {
                 myLabel.Text = "tried but failed";
                 return;
             }
 
+            btnConnect.Text = "Connect to Band: " + band.Name;
+
+        }
+
+        private async void ConnectToBand()
+        {
             myLabel.Text = "connecting...";
-            bandClient = await BandClientManager.Instance.ConnectAsync(band);
-            myLabel.Text = String.Format("connected to {0} !",band.Name);
-
-            // Heart Rate
-
-            bool hrConsentGranted;
-
-            switch (bandClient.SensorManager.HeartRate.UserConsented)
-            {
-                case UserConsent.Declined:
-                    hrConsentGranted = false;
-                    break;
-
-                case UserConsent.Granted:
-                    hrConsentGranted = true;
-                    break;
-
-                default:
-                case UserConsent.Unspecified:
-                    hrConsentGranted = await bandClient.SensorManager.HeartRate.RequestUserConsent();
-                    break;
-            }
-
-            if (hrConsentGranted)
-            {
-                StartHR();
-                bandClient.SensorManager.HeartRate.ReadingChanged += HeartRate_ReadingChanged;
-            }
-            else
-            {
-                myHeartRate.Text = "No Consent for HR";
-            }
-
-            // Skin Sensor
-            StartSkinTemp();
-            bandClient.SensorManager.SkinTemperature.ReadingChanged += SkinTemperature_ReadingChanged;
-
-            // GSR sensor
-            StartGSR();
-            bandClient.SensorManager.Gsr.ReadingChanged += Gsr_ReadingChanged;
-
+            //bandClient = await BandClientManager.Instance.ConnectAsync(band);'
+            bandClient = await bandClientManager.ConnectAsync(band);
+            myLabel.Text = String.Format("connected to {0} !", band.Name);
         }
 
         private void Gsr_ReadingChanged(object sender, Microsoft.Band.Portable.Sensors.BandSensorReadingEventArgs<Microsoft.Band.Portable.Sensors.BandGsrReading> e)
@@ -131,11 +217,11 @@ namespace BioInfo.Client
 
         private void HeartRate_ReadingChanged(object sender, Microsoft.Band.Portable.Sensors.BandSensorReadingEventArgs<Microsoft.Band.Portable.Sensors.BandHeartRateReading> e)
         {
-            Device.BeginInvokeOnMainThread(() => {
-            myHeartRate.Text = string.Format("{0} {1}",
-                e.SensorReading.Quality, e.SensorReading.HeartRate);
-            });
-
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                myHeartRate.Text = string.Format("{0} {1}",
+                    e.SensorReading.Quality, e.SensorReading.HeartRate);
+            });          
         }
 
         private async void StartHR()

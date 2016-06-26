@@ -39,8 +39,13 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPageOld.cs" />
+    <Compile Include="MainPageArchive.xaml.cs">
+      <DependentUpon>MainPageArchive.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BandService.cs" />
+    <Compile Include="ValueConverters\CelsiusToFahrenheitConverter.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Band.Portable, Version=1.3.10.0, Culture=neutral, processorArchitecture=MSIL">
@@ -64,8 +69,12 @@
     <None Include="GettingStarted.Xamarin" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <EmbeddedResource Include="MainPageArchive.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainPage.xaml">

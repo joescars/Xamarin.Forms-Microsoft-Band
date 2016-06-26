@@ -2,7 +2,11 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BioInfo.Client.MainPage"
-             Title="Bio Informatics Band Reader">
+             xmlns:vm="clr-namespace:BioInfo.Client.ViewModels;assembly=BioInfo.Client">
+
+  <ContentPage.BindingContext>
+    <vm:MainPageViewModel />
+  </ContentPage.BindingContext>
 
   <ContentPage.Padding>
     <OnPlatform x:TypeArguments="Thickness">
@@ -18,79 +22,40 @@
     </OnPlatform>
   </ContentPage.Padding>
 
-  <!--<Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>-->
-
   <StackLayout>
     
-    <Label Text="BioInformatics"
+    <Label Text="{Binding PageTitle}"
            Font="Large"
            FontAttributes="Bold"
            HorizontalOptions="Center"/>
-    
-    <Label x:Name="lblStatus"
-           Text="Current Status"
+
+    <Label Text="{Binding CurrentStatus}"
            Font="Normal"
            HorizontalOptions="Center"
            VerticalOptions="CenterAndExpand" />
 
-    <Button x:Name="btnConnect"
-            Text="Connect to Band"
+    <Button Text="{Binding ConnectButtonText}"
             HorizontalOptions="Center"
             VerticalOptions="CenterAndExpand"
-            Clicked="OnButtonConnect"/>
+            IsEnabled="{Binding ConnectButtonEnabled}"
+            Command="{Binding Connect}"/>
 
     <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblHeartRate" Text="Heart Rate Sensor" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch x:Name="ToggleHeart" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnToggleHeartRate" IsEnabled="False"/>
-    </StackLayout>
-    
-    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblSkinTemp" Text="Skin Temperature" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch x:Name="ToggleSkin" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnToggleSkinTemp" IsEnabled="False"/>
+      <Label Text="{Binding ReadHR,StringFormat='Heart Rate: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Switch IsToggled="{Binding IsToggleHeartRate}" HorizontalOptions="End" VerticalOptions="CenterAndExpand"/>
     </StackLayout>
 
     <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblGSR" Text="Galvanic Skin Response (GSR)" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch x:Name="ToggleGSR" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnToggleGSR" IsEnabled="False"/>
+      <Label Text="{Binding ReadSkinTemp,StringFormat='Skin Temp: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Switch IsToggled="{Binding IsToggleSkinTemp}" HorizontalOptions="End" VerticalOptions="CenterAndExpand"/>
     </StackLayout>
 
     <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblAmbientLight" Text="Ambient Light" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch x:Name="ToggleAmbientLight" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnToggleAmbientLight" IsEnabled="False"/>
+      <Label Text="{Binding ReadAmbientLight,StringFormat='Light: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Switch IsToggled="{Binding IsToggleAmbientLight}" HorizontalOptions="End" VerticalOptions="CenterAndExpand"/>
     </StackLayout>
 
-    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblUV" Text="Ultraviolet Light" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch x:Name="ToggleUV" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnToggleUV" IsEnabled="False"/>
-    </StackLayout>
-
-    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblPedometer" Text="Steps" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch x:Name="TogglePedo" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnTogglePedometer" IsEnabled="False"/>
-    </StackLayout>    
-
-    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
-      <Label x:Name="lblCalories" Text="Calories" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch x:Name="ToggleCalories" IsToggled="False" HorizontalOptions="End" VerticalOptions="CenterAndExpand" Toggled="OnToggleCalories" IsEnabled="False"/>
-    </StackLayout>
-
-    <Button x:Name="btnStop"
-            Text="Stop all Sensors"
-            HorizontalOptions="Center"
-            VerticalOptions="CenterAndExpand"
-            Clicked="OnButtonStop"/>
 
   </StackLayout>
-
-
-
+  
 </ContentPage>

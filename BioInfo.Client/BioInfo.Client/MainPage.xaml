@@ -42,18 +42,43 @@
 
     <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
       <Label Text="{Binding ReadHR,StringFormat='Heart Rate: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch IsToggled="{Binding IsToggleHeartRate}" HorizontalOptions="End" VerticalOptions="CenterAndExpand"/>
+      <Switch IsToggled="{Binding IsToggleHeartRate}" HorizontalOptions="End" VerticalOptions="CenterAndExpand" IsEnabled="{Binding IsToggleEnabled}"/>
+    </StackLayout>
+
+    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
+      <Label Text="{Binding ReadGSR, StringFormat='GSR: {0} kohms'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Switch IsToggled="{Binding IsToggleGSR}" HorizontalOptions="End" VerticalOptions="CenterAndExpand" IsEnabled="{Binding IsToggleEnabled}"/>
     </StackLayout>
 
     <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
       <Label Text="{Binding ReadSkinTemp,StringFormat='Skin Temp: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch IsToggled="{Binding IsToggleSkinTemp}" HorizontalOptions="End" VerticalOptions="CenterAndExpand"/>
+      <Switch IsToggled="{Binding IsToggleSkinTemp}" HorizontalOptions="End" VerticalOptions="CenterAndExpand" IsEnabled="{Binding IsToggleEnabled}"/>
     </StackLayout>
 
     <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
       <Label Text="{Binding ReadAmbientLight,StringFormat='Light: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
-      <Switch IsToggled="{Binding IsToggleAmbientLight}" HorizontalOptions="End" VerticalOptions="CenterAndExpand"/>
+      <Switch IsToggled="{Binding IsToggleAmbientLight}" HorizontalOptions="End" VerticalOptions="CenterAndExpand" IsEnabled="{Binding IsToggleEnabled}"/>
     </StackLayout>
+
+    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
+      <Label Text="{Binding ReadUV,StringFormat='Current UV: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Switch IsToggled="{Binding IsToggleUV}" HorizontalOptions="End" VerticalOptions="CenterAndExpand" IsEnabled="{Binding IsToggleEnabled}"/>
+    </StackLayout>
+
+    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
+      <Label Text="{Binding ReadPedometer,StringFormat='Steps Today: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Switch IsToggled="{Binding IsTogglePedometer}" HorizontalOptions="End" VerticalOptions="CenterAndExpand" IsEnabled="{Binding IsToggleEnabled}"/>
+    </StackLayout>
+
+    <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
+      <Label Text="{Binding ReadCalories,StringFormat='Calories Today: {0}'}" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+      <Switch IsToggled="{Binding IsToggleCalories}" HorizontalOptions="End" VerticalOptions="CenterAndExpand" IsEnabled="{Binding IsToggleEnabled}" />
+    </StackLayout>
+
+    <Button Text="Stop all Sensors"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand"
+            Command="{Binding StopAllSensors}"/>
 
 
   </StackLayout>
